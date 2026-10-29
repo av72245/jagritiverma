@@ -1,44 +1,87 @@
-# Jagriti Verma, portfolio prototype
+# Jagriti Verma, portfolio site
 
-An animated portfolio prototype for Jagriti Verma (Melbourne lifestyle creator). No build step: `index.html` is the page and `content.js` holds the editable media and wording.
+Animated portfolio for Jagriti Verma (Melbourne lifestyle creator), built with [Astro](https://astro.build). Each section is its own component, and the build outputs plain static HTML, so everything is readable by search engines without JavaScript.
 
-## Preview locally
+## Adding photos and reels (no code needed)
 
-    python3 -m http.server 8000
-    # open http://localhost:8000
+Drop files into these folders, commit, and the site rebuilds on its own. On github.com: open the folder, click **Add file → Upload files**, drag the files in and press **Commit changes**. Netlify redeploys in about a minute.
 
-## Deploy
+| Folder | What goes in | How it's used |
+|--------|--------------|---------------|
+| `media/photos/` | JPG, PNG or WebP (export iPhone HEIC photos as JPG) | The "Moments" mosaic |
+| `media/reels/` | MP4 or MOV videos | The reel wall and the floating hero cards |
+| `media/hats/` | `banker.jpg`, `broker.jpg`, `founder.jpg` | The Banker / Broker / Founder slider |
+| `media/portrait/` | One photo of Jagriti | The hero circle and the link preview image |
 
-Any static host works. Point it at the repo root, with no build command and `index.html` as the entry (Netlify, Vercel, Cloudflare Pages, GitHub Pages).
+**Naming does the work:**
 
-## Adding her reels, photos and music
+- `01-hotham-snow.jpg` shows first, with the caption "Hotham snow". The number sets the order, and the words become the caption.
+- `03-perth-2026.mp4` becomes the reel titled "Perth 2026".
+- Phone names like `IMG_1234.jpg` still work, they just get no caption.
 
-Everything is controlled from `content.js`. If a file is missing, the page shows a "coming soon" tile, so you can add things a few at a time.
+**Optional reel details.** Add a text file with the same name, for example `03-perth-2026.txt`:
 
-**Reels** (`media/reels/`)
-- Use the original file from her phone or editing app, not an Instagram download.
-- Shrink each one (vertical, about 3 to 6 MB, no audio needed):
+    link: https://www.instagram.com/reel/abc123/
+    views: 1.2M plays
 
-      ffmpeg -i input.mov -vf "scale=720:-2,fps=30" -c:v libx264 -crf 28 -preset slow -an -movflags +faststart media/reels/01.mp4
-      ffmpeg -i input.mov -ss 1 -frames:v 1 -vf "scale=720:-2" media/reels/01.jpg
+**You don't need to resize anything.** Photos are resized and converted to WebP when the site builds. Videos over 8 MB, and any `.mov`, are shrunk by a GitHub Action (`.github/workflows/compress-reels.yml`), which also makes a still image for each reel.
 
-- In `content.js`, set each reel's `title`, `url` (the reel's Instagram link, used by the small arrow icon) and optional `stat`.
-- Reels with trending audio can be taken down for copyright. Muted clips avoid this.
+**Tips:**
 
-**Photos** (`media/photos/`)
-- JPG or WebP, about 1600 px wide, under 400 KB each. Name them `01.jpg`, `02.jpg` and so on, and edit the captions in `content.js`.
-- The desktop mosaic is laid out for 13 photos. Fewer photos leave gaps, so remove the extra slots or add more.
-- `hat-banker.jpg`, `hat-broker.jpg`, `hat-founder.jpg` fill the Banker / Broker / Founder slider.
+- Use original files from her phone or editing app, not Instagram downloads.
+- Reels with trending audio can be taken down for copyright. The site plays them muted.
+- The desktop mosaic has a hand-placed layout for exactly 13 photos. Any other number uses a flowing grid.
 - Check that anyone else in a photo is happy to appear.
 
-**Music**
-- The Sound button plays a soft generated loop by default.
-- To use a real track, put a licensed file at `media/audio/theme.mp3` and set `audio: 'media/audio/theme.mp3'` in `content.js`.
+While a folder is empty, the site shows "coming soon" tiles, so photos and reels can be added a few at a time.
+
+## Changing wording
+
+Most text lives in `src/data/site.js`: the rotating hero words, the marquee, brands, the Free ka gyan tips and the page title and description. Section-specific copy is in the matching file in `src/components/`.
+
+## Structure
+
+    src/
+      components/   Header, Hero, Marquee, Divider, Channels, Reels, Story,
+                    Photos, Gyan, Wealth, Work, Footer
+      data/site.js  editable wording
+      lib/media.js  reads the media folders at build time
+      layouts/      page head: SEO tags, schema, fonts
+      pages/        index page, robots.txt, og.png share image
+      scripts/      animations and interactions
+      styles/       global.css
+    media/          upload folders (see above)
+    public/         favicon, optional audio
+
+## SEO
+
+- Static HTML for every section, including reels, photos and tips
+- Title, description, canonical URL, Open Graph and Twitter cards
+- Person and FAQ structured data (the tips appear as FAQs)
+- `sitemap-index.xml` and `robots.txt`, generated on every build
+- Alt text taken from photo captions
+
+The site address comes from Netlify's `URL` setting automatically. To use a custom domain before Netlify knows about it, set a `SITE_URL` environment variable in Netlify.
+
+## Fonts
+
+Bricolage Grotesque for her name and headlines, and DM Sans for everything else. `FONTS.md` records the original three-font setup if you want it back.
+
+## Music
+
+The Sound button plays a soft generated loop. To use a licensed track, put it at `public/audio/theme.mp3` and set `audio: '/audio/theme.mp3'` in `src/data/site.js`.
+
+## Local development
+
+    npm install
+    npm run dev      # http://localhost:4321
+    npm run build    # outputs dist/
+
+Deploys to Netlify using `netlify.toml` (build `npm run build`, publish `dist`).
 
 ## Still placeholders
 
-- Portrait circle in the hero ("Photo goes here")
-- Reel and photo tiles, reel view counts
+- Portrait, reels, photos and hat photos (folders are ready)
 - Brand names beyond SHEIN, and the men's skincare brand name
 - Collaboration formats and "Rates on request" wording
 - Contact form (does not send anything yet) and a direct email address

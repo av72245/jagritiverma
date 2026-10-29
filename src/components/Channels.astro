@@ -1,0 +1,46 @@
+---
+import Divider from './Divider.astro';
+
+const worlds = [
+  { c: '--rose', on: '--on-pop', label: 'Jag in Melbourne', kicker: 'Main channel · 10.3K followers',
+    desc: 'Lifestyle from the unfiltered optimist. Glamping, trips to Perth and Hotham, and a little free ka gyan.',
+    handle: 'jaginmelbourne', meta: 'Lifestyle · Travel' },
+  { c: '--royal', on: '--on-royal', label: 'Broker', kicker: 'Mortgage broker',
+    desc: 'Credit assessor turned mortgage broker. Home loan help across Australia, in plain language.',
+    handle: 'mortgagebroker_jag', meta: 'KIN Finance' },
+  { c: '--gold', on: '--on-pop', label: 'Personal', kicker: 'Private account',
+    desc: 'The private one, for friends and family. Roots in Lucknow, Chennai and Pune, home in Melbourne.',
+    handle: 'jagritiverma', meta: 'Friends and family' },
+  { c: '--sea', on: '--on-pop', label: 'Siblings', kicker: 'With Akash',
+    desc: 'Siblings with zero supervision. We share DNA, and that is about it.',
+    handle: 'siblings_gone_rogue', meta: 'Melbourne' }
+];
+---
+<section class="sec" id="channels">
+  <Divider />
+  <h2 class="h2 rv">Many channels. One Jagriti.</h2>
+  <p class="lead rv">Four accounts, four moods. Pick one and the whole page takes its colour.</p>
+
+  <div class="worlds" id="worlds">
+    {worlds.map((w, i) => (
+      <article class:list={['world', { active: i === 0 }]} data-c={w.c} data-on={w.on} style={`--c:var(${w.c});--on:var(${w.on})`}>
+        <button class="w-hit" type="button" aria-label={`Show ${w.label}`} aria-expanded={i === 0 ? 'true' : 'false'} data-cursor="Open"></button>
+        <span class="w-orb"></span>
+        <span class="w-label" aria-hidden="true">{w.label}</span>
+        <div class="w-body">
+          <p class="w-kicker">{w.kicker}</p>
+          <h3 class="w-title">{w.label}</h3>
+          <p class="w-desc">{w.desc}</p>
+          <div class="w-meta"><a class="w-link" href={`https://www.instagram.com/${w.handle}/`} target="_blank" rel="noopener">@{w.handle} ↗</a><span>{w.meta}</span></div>
+        </div>
+        <div class="phone" aria-hidden="true"><div class="phone-in"><i></i></div></div>
+      </article>
+    ))}
+  </div>
+
+  <div class="facts">
+    <div class="fact rv"><b><span class="count" data-to="10.3" data-dec="1">10.3</span>K</b><span>followers on @jaginmelbourne</span></div>
+    <div class="fact rv" style="--d:.08s"><b><span class="count" data-to="5">5</span>+</b><span>years in lending</span></div>
+    <div class="fact rv" style="--d:.16s"><b><span class="count" data-to="4">4</span>+</b><span>years at ANZ</span></div>
+  </div>
+</section>

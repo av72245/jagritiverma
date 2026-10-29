@@ -1,0 +1,37 @@
+---
+import Divider from './Divider.astro';
+---
+<section class="sec" id="work">
+  <Divider />
+    <h2 class="h2 rv">Let's make something people watch twice.</h2>
+    <p class="lead rv">Tap a card to flip it. Formats and wording are drafts for Jagriti to edit.</p>
+    <div class="formats">
+      <div class="fc rv"><button class="fc-in" type="button" aria-label="Flip card: UGC video" data-cursor="Flip">
+        <span class="face-f" style="--c:var(--rose);--on:var(--on-pop)"><span class="hint">Format</span><span><h3>UGC video</h3><p>A vertical video made for your brand, ready to post or run as an ad.</p></span><span class="hint">Tap to flip</span></span>
+        <span class="face-b"><span class="hint">What you get</span><span><h3>Rates on request</h3><p>Concept, filming, edit and usage rights agreed up front.</p></span><span class="hint">Tap to flip back</span></span>
+      </button></div>
+      <div class="fc rv" style="--d:.08s"><button class="fc-in" type="button" aria-label="Flip card: Reel feature" data-cursor="Flip">
+        <span class="face-f" style="--c:var(--sea);--on:var(--on-pop)"><span class="hint">Format</span><span><h3>Reel feature</h3><p>Your product or place, shown to her audience in her own voice.</p></span><span class="hint">Tap to flip</span></span>
+        <span class="face-b"><span class="hint">What you get</span><span><h3>Rates on request</h3><p>Posted on the channel that fits your brand best.</p></span><span class="hint">Tap to flip back</span></span>
+      </button></div>
+      <div class="fc rv" style="--d:.16s"><button class="fc-in" type="button" aria-label="Flip card: Ongoing partnership" data-cursor="Flip">
+        <span class="face-f" style="--c:var(--gold);--on:var(--on-pop)"><span class="hint">Format</span><span><h3>Ongoing partner</h3><p>A longer run of content across channels, with room to grow the idea.</p></span><span class="hint">Tap to flip</span></span>
+        <span class="face-b"><span class="hint">What you get</span><span><h3>Let's talk</h3><p>Built around your goals, with a plan for each month.</p></span><span class="hint">Tap to flip back</span></span>
+      </button></div>
+    </div>
+
+    <div class="desk">
+      <div class="rv">
+        <h3 class="h2" style="font-size:clamp(34px,5vw,60px)">Say hello.</h3>
+        <p class="lead">Tell Jagriti about your brand and what you have in mind, or message <a href="https://www.instagram.com/jaginmelbourne/" target="_blank" rel="noopener">@jaginmelbourne</a> on Instagram. A direct email will be added here.</p>
+      </div>
+      <form class="form rv" id="hello" style="--d:.1s">
+        <label for="f-name">Your name<input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Alex Morgan"></label>
+        <label for="f-brand">Brand or company<input id="f-brand" name="brand" type="text" autocomplete="organization" placeholder="Your brand"></label>
+        <label for="f-msg">What would you like to make together?<textarea id="f-msg" name="message" required placeholder="A short note is plenty."></textarea></label>
+        <div><button class="btn big mag" type="submit" data-cursor="Send">Send it</button></div>
+        <p class="msg" id="formMsg" role="status"></p>
+        <p class="note">Prototype: this form does not send anything yet.</p>
+      </form>
+    </div>
+</section>

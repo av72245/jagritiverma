@@ -1,0 +1,41 @@
+---
+const channels = [
+  { handle: 'jaginmelbourne', label: 'Lifestyle' },
+  { handle: 'mortgagebroker_jag', label: 'Mortgage broker' },
+  { handle: 'siblings_gone_rogue', label: 'Siblings' }
+];
+const year = new Date().getFullYear();
+---
+<footer class="foot">
+  <div class="foot-in">
+    <div class="foot-top">
+      <div>
+        <p class="foot-kick">Made in Melbourne</p>
+        <a class="foot-name" href="#top" aria-label="Back to top">Jagriti<br>Verma<span class="foot-arrow" aria-hidden="true">↑</span></a>
+      </div>
+      <a class="btn big mag foot-cta" href="#work" data-cursor="Go">Work with me</a>
+    </div>
+
+    <div class="foot-grid">
+      <nav aria-label="Footer">
+        <h3>On this page</h3>
+        <a href="#channels">Channels</a><a href="#reels">Reels</a><a href="#story">Story</a><a href="#photos">Photos</a><a href="#gyan">Free ka gyan</a><a href="#wealth">Wealth</a>
+      </nav>
+      <div>
+        <h3>Instagram</h3>
+        {channels.map((c) => (
+          <a href={`https://www.instagram.com/${c.handle}/`} target="_blank" rel="noopener">@{c.handle} <small>{c.label}</small></a>
+        ))}
+      </div>
+      <div class="foot-loan">
+        <h3>Looking for a home loan?</h3>
+        <p>Jagriti is a mortgage broker at KIN Finance, Collingwood. Her broker site is coming separately. Until then, message <a href="https://www.instagram.com/mortgagebroker_jag/" target="_blank" rel="noopener">@mortgagebroker_jag</a>.</p>
+      </div>
+    </div>
+
+    <div class="foot-base">
+      <span>© {year} Jagriti Verma · Melbourne, Australia</span>
+      <span>Content here is general information, not financial or credit advice.</span>
+    </div>
+  </div>
+</footer>

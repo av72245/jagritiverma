@@ -1,0 +1,20 @@
+---
+import Divider from './Divider.astro';
+---
+<section class="sec" id="wealth">
+  <Divider />
+    <h2 class="h2 rv">What does wealth mean to you?</h2>
+    <div class="wealth rv">
+      <p class="w-q">Jagriti started Women Wealth Circle because wealth was never only about money. Pick the one that matters most to you.</p>
+      <div class="chips" id="chips" role="group" aria-label="Pick what wealth means to you">
+        <button class="chip" type="button" aria-pressed="false" data-w="Peace of mind" data-l="Sleeping well, knowing the plan is solid.">Peace of mind</button>
+        <button class="chip" type="button" aria-pressed="false" data-w="Confidence" data-l="Walking into any room, or any bank, and knowing your numbers.">Confidence</button>
+        <button class="chip" type="button" aria-pressed="false" data-w="Relationships" data-l="People you can lean on, and time to spend with them.">Relationships</button>
+        <button class="chip" type="button" aria-pressed="false" data-w="Power" data-l="Making your own calls about your own money.">Power</button>
+        <button class="chip" type="button" aria-pressed="false" data-w="Growth" data-l="Learning something new every year, and having room to try it.">Growth</button>
+        <button class="chip" type="button" aria-pressed="false" data-w="Freedom" data-l="Choices that are yours, not forced on you.">Freedom</button>
+      </div>
+      <div class="word" id="word" aria-live="polite">Pick one</div>
+      <p class="word-line" id="wordLine">Tap a word and watch it land.</p>
+    </div>
+</section>

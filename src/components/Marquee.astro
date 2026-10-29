@@ -1,0 +1,7 @@
+---
+import { site } from '../data/site.js';
+const words = [...site.marquee, ...site.marquee];
+---
+<div class="marquee bleed" id="marquee" aria-hidden="true">
+  <div class="m-track" id="mtrack">{words.map((w) => (<Fragment><span>{w}</span><i></i></Fragment>))}</div>
+</div>

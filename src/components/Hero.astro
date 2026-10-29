@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../data/site.js';
+import { reels, portrait } from '../lib/media.js';
+
+/* Floating cards use the first four reels; until there are reels, the original four titles */
+const ph = site.placeholderReels;
+const cardTitles = reels.length
+  ? [...new Set([...reels.map((r) => r.title), ...ph])].slice(0, 4)
+  : [ph[0], ph[1], ph[4], ph[3]];
+const cards = [
+  { r: '-8deg', d: 18, pos: 'left:0;top:2%', g: ['--rose', '--gold'] },
+  { r: '7deg', d: -22, pos: 'right:0;top:0', g: ['--sea', '--gold'] },
+  { r: '5deg', d: 26, pos: 'left:2%;bottom:0', g: ['--gold', '--pop'] },
+  { r: '-6deg', d: -16, pos: 'right:2%;bottom:2%', g: ['--sea', '--rose'] }
+];
+---
+<section class="hero" id="hero">
+  <div class="blobs" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i></div>
+  <div class="hero-copy">
+    <p class="pill"><span class="dot"></span>Open to collaborations</p>
+    <h1 data-split>Jagriti Verma</h1>
+    <p class="lede rv">Creator in Melbourne. Also a <span class="rot" id="rot" data-roles={JSON.stringify(site.roles)}>{site.roles[0]}</span>.</p>
+    <p class="sub rv" style="--d:.1s">The unfiltered optimist. Brands come for the content, clients come for the clarity.</p>
+    <div class="cta rv" style="--d:.2s">
+      <a class="btn big mag" href="#work" data-cursor="Go">Work with me</a>
+      <a class="btn big ghost mag" href="#channels">Explore the channels</a>
+    </div>
+  </div>
+
+  <div class="collage" id="collage">
+    {cards.map((c, i) => (
+      <div class="card" style={`--r:${c.r};--d:${c.d};${c.pos}`}>
+        <div class="card-in tilt" style={`--g1:var(${c.g[0]});--g2:var(${c.g[1]})`} data-cursor="Play" tabindex="0" role="button" aria-label={`Play sample reel: ${cardTitles[i]}`}>
+          <span class="tag">Sample reel</span><span class="ct">{cardTitles[i]}</span><span class="play"></span>
+          <span class="eq"><i></i><i></i><i></i><i></i></span><span class="bar-p"><i></i></span>
+        </div>
+      </div>
+    ))}
+    <div class="portrait">
+      <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
+        <defs><path id="circ" d="M100,100 m-82,0 a82,82 0 1,1 164,0 a82,82 0 1,1 -164,0"/></defs>
+        <text><textPath href="#circ" textLength="508" lengthAdjust="spacing">JAGRITI VERMA · MELBOURNE · LIFESTYLE CREATOR · MORTGAGE BROKER · </textPath></text>
+      </svg>
+      <div class="face" data-cursor="Hi!">
+        {portrait
+          ? <Image src={portrait} alt="Jagriti Verma" widths={[240, 480]} sizes="240px" loading="eager" fetchpriority="high" />
+          : <span>JV</span>}
+      </div>
+      {!portrait && <small>Photo goes here</small>}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import Divider from './Divider.astro';
+import { site } from '../data/site.js';
+import { photos } from '../lib/media.js';
+
+const GR = [['--rose', '--gold'], ['--sea', '--gold'], ['--gold', '--pop'], ['--sea', '--rose'], ['--rose', '--pop'], ['--gold', '--sea']];
+const grad = (i) => `--g1:var(${GR[i % GR.length][0]});--g2:var(${GR[i % GR.length][1]})`;
+
+const tiles = photos.length ? photos : Array.from({ length: site.placeholderPhotos }, () => ({ img: null, cap: '' }));
+/* 13 photos fill the hand-placed desktop layout; any other count flows into a dense grid with no gaps */
+const exact = tiles.length === 13;
+---
+<section class="sec" id="photos">
+  <Divider />
+  <h2 class="h2 rv">Moments.</h2>
+  <p class="lead rv">Hover over a photo to bring it forward. On a phone, tap it.</p>
+  <div class:list={['mosaic', { exact }]} id="mosaic">
+    {tiles.map((p, i) => (
+      <button type="button" class:list={['tile', `p${(i % 13) + 1}`, { m2: i % 13 === 0 || i % 13 === 7 }]} style={grad(i)} aria-label={p.cap || `Photo ${i + 1}`}>
+        <span class="ph">Photo coming soon</span>
+        {p.img && <Image src={p.img} alt={p.cap || `Jagriti Verma, photo ${i + 1}`} widths={[400, 800, 1400]} sizes="(max-width:700px) 66vw, 34vw" loading="lazy" />}
+        <span class="cap">{p.cap}</span>
+      </button>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,48 @@
+# Shrinks reels uploaded to media/reels so the site stays fast.
+# - Converts .mov/.webm to .mp4, and re-encodes any video over 8 MB (720px wide, no audio).
+# - Creates a still (same name, .jpg) for any reel that does not have one.
+# Commits made by this workflow do not trigger it again.
+name: Compress reels
+
+on:
+  push:
+    paths:
+      - 'media/reels/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Compress and make stills
+        shell: bash
+        run: |
+          shopt -s nullglob nocaseglob
+          cd media/reels
+          for f in *.mp4 *.mov *.webm; do
+            name="${f%.*}"
+            ext="${f##*.}"; ext="${ext,,}"
+            size=$(stat -c %s "$f")
+            if [[ "$ext" != "mp4" || $size -gt 8000000 ]]; then
+              echo "Compressing $f ($((size/1000000)) MB)"
+              ffmpeg -y -loglevel error -i "$f" -vf "scale='min(720,iw)':-2,fps=30" -c:v libx264 -crf 28 -preset slow -an -movflags +faststart "$name.tmp.mp4"
+              rm "$f"; mv "$name.tmp.mp4" "$name.mp4"
+            fi
+            if ! ls "$name".{jpg,jpeg,png,webp} >/dev/null 2>&1; then
+              echo "Making still for $name"
+              ffmpeg -y -loglevel error -ss 1 -i "$name.mp4" -frames:v 1 -vf "scale='min(720,iw)':-2" "$name.jpg" || true
+            fi
+          done
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A media/reels
+          git diff --cached --quiet || git commit -m "Compress reels and add stills"
+          git push

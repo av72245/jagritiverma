@@ -1,0 +1,40 @@
+---
+import Divider from './Divider.astro';
+import { site } from '../data/site.js';
+import { reels } from '../lib/media.js';
+import { getImage } from 'astro:assets';
+
+const GR = [['--rose', '--gold'], ['--sea', '--gold'], ['--gold', '--pop'], ['--sea', '--rose'], ['--rose', '--pop'], ['--gold', '--sea']];
+const grad = (i) => `--g1:var(${GR[i % GR.length][0]});--g2:var(${GR[i % GR.length][1]})`;
+
+const items = reels.length
+  ? await Promise.all(reels.map(async (r) => ({
+      ...r,
+      poster: r.poster ? (await getImage({ src: r.poster, width: 540, format: 'webp' })).src : ''
+    })))
+  : site.placeholderReels.map((title) => ({ title, src: '', poster: '', url: site.instagram + 'reels/', stat: '' }));
+---
+<section class="sec" id="reels">
+  <Divider />
+  <h2 class="h2 rv">The ones people kept watching.</h2>
+  <p class="lead rv">Hover to play, or tap on a phone. The arrow in the corner opens the reel on Instagram.</p>
+  <div class="reels" id="reelWall">
+    {items.map((r, i) => (
+      <article class:list={['reel', { empty: !r.src }]} style={grad(i)}>
+        {r.src && <video muted loop playsinline preload="metadata" poster={r.poster || undefined} src={`${r.src}#t=0.1`} aria-label={r.title}></video>}
+        <span class="ph">Reel coming soon</span><span class="shade"></span><span class="play"></span>
+        <button class="hit" type="button" aria-label={`Play ${r.title}`} data-cursor="Play"></button>
+        <div class="meta"><b>{r.title}</b>{r.stat && <span>{r.stat}</span>}</div>
+        <a class="open" href={r.url || site.instagram + 'reels/'} target="_blank" rel="noopener" aria-label={`Open ${r.title} on Instagram`} data-cursor="Open"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </article>
+    ))}
+  </div>
+  <div class="brands rv">
+    <h3 class="sub-h">Brands she has created for</h3>
+    <div class="brand-row" id="brandRow">
+      {site.brands.map((b) => <span class="brand">{b}</span>)}
+      {Array.from({ length: site.brandSlots }, () => <span class="brand empty">Brand name</span>)}
+    </div>
+    <p class="note" style="margin-top:14px">Prototype: brand names to be confirmed with Jagriti. Logos need each brand's permission.</p>
+  </div>
+</section>

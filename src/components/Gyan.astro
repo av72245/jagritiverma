@@ -1,0 +1,33 @@
+---
+import Divider from './Divider.astro';
+import { site } from '../data/site.js';
+
+const COL = [['--rose', '--on-pop'], ['--sea', '--on-pop'], ['--gold', '--on-pop'], ['--royal', '--on-royal']];
+---
+<section class="sec" id="gyan">
+  <Divider />
+  <h2 class="h2 rv">Money questions, answered simply.</h2>
+  <div class="gyan">
+    <p class="lead rv">Tap a card to flip it. Swipe, drag or use the arrows to move on.</p>
+    <div class="rv" style="--d:.1s">
+      <div class="deck" id="deck" tabindex="0" role="group" aria-roledescription="carousel" aria-label="Free ka gyan money tips" data-cursor="Flip">
+        {site.tips.map((t, i) => (
+          <div class="gcard" style={`--c:var(${COL[i % 4][0]});--on:var(${COL[i % 4][1]});--o:${Math.min(2, i)}`}>
+            <div class="gcard-in">
+              <div class="g-f"><span class="g-tag">{t.tag}</span><h3>{t.q}</h3><span class="g-tag">Tap to flip</span></div>
+              <div class="g-b"><span class="g-tag">Free ka gyan</span><p>{t.a}</p><span class="g-tag">Tap to flip back</span></div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="g-ctl">
+        <button class="circ" id="gPrev" type="button" aria-label="Previous tip">&larr;</button>
+        <button class="circ" id="gNext" type="button" aria-label="Next tip">&rarr;</button>
+        <div class="g-dots" id="gDots" aria-hidden="true">{site.tips.map(() => <i></i>)}</div>
+        <span class="note" id="gCount" style="display:inline"></span>
+      </div>
+      <p class="sr" id="gLive" aria-live="polite"></p>
+    </div>
+  </div>
+  <p class="note rv" style="margin-top:22px">General information only. It is not financial or credit advice. Speak to a licensed professional about your own situation.</p>
+</section>

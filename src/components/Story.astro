@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import Divider from './Divider.astro';
+import { hats } from '../lib/media.js';
+
+const hatList = [
+  { key: 'banker', tag: 'Hat one', name: 'Banker', c: '--royal', on: '--on-royal', text: 'Years inside a major bank, from settlements to credit assessment, learning how lending decisions get made.' },
+  { key: 'broker', tag: 'Hat two', name: 'Broker', c: '--gold', on: '--on-pop', text: "The move to the client's side of the table, explaining home loans in plain language." },
+  { key: 'founder', tag: 'Hat three', name: 'Founder', c: '--rose', on: '--on-pop', text: "Women Wealth Circle, plus a men's skincare brand. Name coming soon." }
+];
+---
+<section class="sec" id="story">
+  <Divider />
+  <h2 class="h2 rv">From engineer to broker to founder.</h2>
+  <p class="lead rv">Behind every loan application is a story, a goal and a dream. Hers has had a few chapters. Scroll to move through them.</p>
+  <div class="hats rv" id="hats">
+    <div class="hat-stage" id="hatStage">
+      {hatList.map((h) => (
+        <div class="hat" style={`--c:var(${h.c});--on:var(${h.on})`}>
+          <div><p class="g-tag">{h.tag}</p><h3>{h.name}</h3><p>{h.text}</p></div>
+          <div class="hat-img"><span>Photo coming soon</span>{hats[h.key] && <Image src={hats[h.key]} alt={`Jagriti as ${h.name.toLowerCase()}`} widths={[480, 900]} sizes="(max-width:700px) 0px, 40vw" loading="lazy" />}</div>
+        </div>
+      ))}
+    </div>
+      <div class="hat-ctl">
+        <input id="hatRange" type="range" min="0" max="2" step="0.01" value="0" aria-label="Slide between banker, broker and founder">
+        <div class="hat-labels"><button class="hat-btn" type="button" aria-pressed="true" data-i="0">Banker</button><button class="hat-btn" type="button" aria-pressed="false" data-i="1">Broker</button><button class="hat-btn" type="button" aria-pressed="false" data-i="2">Founder</button></div>
+      </div>
+    </div>
+    <figure class="journey rv">
+      <svg viewBox="0 0 800 350" role="img" aria-labelledby="jt">
+        <title id="jt">Stylised route from Lucknow to Chennai to Pune to Melbourne</title>
+        <path id="route" class="route" pathLength="1" d="M170 60 C240 70 330 120 300 200 C270 250 190 230 150 170 C250 30 580 60 650 290"/>
+        <circle class="traveller" r="8" cx="0" cy="0"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#route"/></animateMotion></circle>
+        <g class="pin" style="--k:0"><circle cx="170" cy="60" r="10"/><text x="170" y="36" text-anchor="middle">Lucknow</text></g>
+        <g class="pin" style="--k:1"><circle cx="300" cy="200" r="10"/><text x="322" y="208">Chennai</text></g>
+        <g class="pin" style="--k:2"><circle cx="150" cy="170" r="10"/><text x="130" y="178" text-anchor="end">Pune</text></g>
+        <g class="pin" style="--k:3"><circle cx="650" cy="290" r="10"/><text x="650" y="330" text-anchor="middle">Melbourne</text></g>
+      </svg>
+      <ol class="chap" aria-label="Where she has worked and built in Australia">
+        <li style="--k:0"><b>ANZ</b></li><li style="--k:1"><b>Aussie</b></li><li style="--k:2"><b>Women Wealth Circle</b></li><li style="--k:3"><b>KIN Finance</b></li><li style="--k:4"><b>Men's skincare brand</b></li>
+      </ol>
+      <figcaption>Where she has worked and built in Australia, from the big bank to her own brands. Lucknow, the city of the nawabs, then Chennai, Pune and now Melbourne. Route is stylised, not to scale.</figcaption>
+    </figure>
+    <div class="story">
+      <div class="stage" aria-hidden="true" id="stage">
+        <div class="stage-year" id="sYear">2016</div>
+        <div class="stage-role" id="sRole">Project Engineer</div>
+        <div class="stage-co" id="sCo">Wipro Technologies</div>
+      </div>
+      <ol class="t-track" id="track">
+        <span class="t-fill" aria-hidden="true"></span>
+        <li class="t-item active" data-year="2016" data-role="Project Engineer" data-co="Wipro Technologies">
+          <p class="t-year-m">2016 to 2018</p><h3>Project Engineer</h3><p class="t-co">Wipro Technologies · Dec 2016 to Oct 2018</p>
+          <p>The first chapter was engineering, delivering projects for nearly two years.</p>
+        </li>
+        <li class="t-item" data-year="2020" data-role="Marketing Intern" data-co="Cornerstone Law Offices">
+          <p class="t-year-m">2020 to 2021</p><h3>Marketing Intern</h3><p class="t-co">Cornerstone Law Offices · Aug 2020 to Jan 2021</p>
+          <p>Six months of marketing, and an early taste of telling a business's story.</p>
+        </li>
+        <li class="t-item" data-year="2021" data-role="Customer Settlement Officer" data-co="ANZ">
+          <p class="t-year-m">2021 to 2023</p><h3>Customer Settlement Officer</h3><p class="t-co">ANZ · Nov 2021 to Jun 2023</p>
+          <p>Document preparation at a major bank, where the detail has to be exactly right.</p>
+        </li>
+        <li class="t-item" data-year="2023" data-role="Credit Assessment Case Manager" data-co="ANZ">
+          <p class="t-year-m">2023 to 2025</p><h3>Credit Assessment Case Manager</h3><p class="t-co">ANZ · Jun 2023 to Nov 2025</p>
+          <p>Two and a half years deciding on lending, and seeing what makes an application land.</p>
+        </li>
+        <li class="t-item" data-year="2025" data-role="Mortgage Broker" data-co="Aussie">
+          <p class="t-year-m">2025 to 2026</p><h3>Mortgage Broker</h3><p class="t-co">Aussie · Nov 2025 to Sep 2026</p>
+          <p>The move to the client's side of the table, guiding people through buying a home.</p>
+        </li>
+        <li class="t-item" data-year="2026" data-role="Founder" data-co="Women Wealth Circle">
+          <p class="t-year-m">2026</p><h3>Founder</h3><p class="t-co">Women Wealth Circle · Mar 2026 to Oct 2026</p>
+          <p>A community built on the idea that wealth is bigger than money.</p>
+        </li>
+        <li class="t-item" data-year="Now" data-role="Mortgage Broker" data-co="KIN Finance">
+          <p class="t-year-m">Now</p><h3>Mortgage Broker</h3><p class="t-co">KIN Finance · Collingwood · Sep 2026 to present</p>
+          <p>Helping first home buyers, refinancers and investors make confident decisions.</p>
+        </li>
+        <li class="t-item" data-year="Also" data-role="Founder" data-co="Men's skincare brand">
+          <p class="t-year-m">Also</p><h3>Founder</h3><p class="t-co">Men's skincare brand · name coming soon</p>
+          <p>Building a skincare brand for men, alongside everything else.</p>
+        </li>
+      </ol>
+    </div>
+</section>

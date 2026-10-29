@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site.js';
+import { portrait } from '../lib/media.js';
+import { getImage } from 'astro:assets';
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const share = portrait
+  ? new URL((await getImage({ src: portrait, width: 1200, format: 'jpg' })).src, Astro.site).href
+  : new URL('/og.png', Astro.site).href;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: site.name,
+    url: canonical,
+    image: share,
+    description: site.description,
+    jobTitle: 'Lifestyle creator and mortgage broker',
+    worksFor: { '@type': 'Organization', name: 'KIN Finance' },
+    address: { '@type': 'PostalAddress', addressLocality: 'Melbourne', addressRegion: 'VIC', addressCountry: 'AU' },
+    sameAs: site.sameAs
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: site.tips.map((t) => ({
+      '@type': 'Question',
+      name: t.q,
+      acceptedAnswer: { '@type': 'Answer', text: t.a }
+    }))
+  }
+];
+---
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{site.title}</title>
+<meta name="description" content={site.description}>
+<link rel="canonical" href={canonical}>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#1B1421">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="sitemap" href="/sitemap-index.xml">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content={site.name}>
+<meta property="og:title" content={site.title}>
+<meta property="og:description" content={site.description}>
+<meta property="og:url" content={canonical}>
+<meta property="og:image" content={share}>
+<meta property="og:locale" content="en_AU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={site.title}>
+<meta name="twitter:description" content={site.description}>
+<meta name="twitter:image" content={share}>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body>
+<slot />
+<script>
+  import '../scripts/main.js';
+</script>
+</body>
+</html>
