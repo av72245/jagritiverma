@@ -1,5 +1,6 @@
 ---
 /* Full-width rule that draws across the page as a section scrolls in.
-   Replaces the old "— Section name" eyebrow labels. */
+   mode "flee": the dot runs from the cursor (home). mode "coin": a coin rolls to the cursor and can be collected (gyan pages). */
+const { mode = 'flee' } = Astro.props;
 ---
-<div class="rule bleed" aria-hidden="true"><i class="rule-line"></i><i class="rule-dot"></i></div>
+<div class:list={['rule bleed', { 'rule-coin': mode === 'coin' }]} data-mode={mode} aria-hidden="true"><i class="rule-line"></i><i class="rule-dot"></i></div>

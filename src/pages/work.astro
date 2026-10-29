@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Divider from '../components/Divider.astro';
+import Formats from '../components/Formats.astro';
+import HelloForm from '../components/HelloForm.astro';
+import work from '../data/work.json';
+
+const title = 'Work with Jagriti Verma | Melbourne lifestyle creator for brands';
+const description = 'Brand collaborations with Melbourne lifestyle creator Jagriti Verma: UGC video, reel features and ongoing partnerships. Audience, formats, process and how to get in touch.';
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: work.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: 'Work with me', item: new URL('/work', Astro.site).href }
+    ]
+  }
+];
+---
+<Layout title={title} description={description} jsonLd={jsonLd} world="--rose" page="work">
+  <Header />
+  <main class="wrap" id="top">
+    <section class="hero wk-hero">
+      <div class="blobs" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i></div>
+      <div>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Work with me</span></nav>
+        <button class="pill rec" id="rec" type="button" aria-pressed="false" data-cursor="Roll"><span class="dot"></span>Open to collaborations</button>
+        <h1 data-split>Work with Jagriti</h1>
+        <p class="lede rv">{work.headline}</p>
+        <p class="sub rv" style="--d:.1s">{work.intro}</p>
+        <div class="cta rv" style="--d:.2s"><a class="btn big mag" href="#hello-form" data-cursor="Go">Start a brief</a><a class="btn big ghost mag" href="/#reels">See the reels</a></div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <Divider />
+      <h2 class="h2 rv">The numbers.</h2>
+      <div class="facts">
+        {work.stats.map((s, i) => <div class="fact rv" style={`--d:${i * 0.08}s`}><b>{s.value}</b><span>{s.label}</span></div>)}
+      </div>
+      <p class="lead rv" style="margin-top:28px">{work.audience}</p>
+    </section>
+
+    <section class="sec">
+      <Divider />
+      <h2 class="h2 rv">Ways to work together.</h2>
+      <p class="lead rv">Tap a card to flip it.</p>
+      <Formats />
+      <div class="brands rv">
+        <h3 class="sub-h">Brands she has created for</h3>
+        <div class="brand-row">
+          {work.brands.map((b) => <span class="brand">{b}</span>)}
+          {Array.from({ length: work.brandSlots }, () => <span class="brand empty">Brand name</span>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <Divider />
+      <h2 class="h2 rv">How it works.</h2>
+      <ol class="steps">
+        {work.process.map((p, i) => (
+          <li class="step rv" style={`--d:${i * 0.08}s`}><span class="step-n">{String(i + 1).padStart(2, '0')}</span><h3>{p.title}</h3><p>{p.text}</p></li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="sec">
+      <Divider />
+      <h2 class="h2 rv">Good to know.</h2>
+      <div class="faqs">
+        {work.faqs.map((f) => (
+          <details class="faq rv"><summary>{f.q}<span aria-hidden="true">+</span></summary><p>{f.a}</p></details>
+        ))}
+      </div>
+    </section>
+
+    <section class="sec" id="hello-form">
+      <Divider />
+      <HelloForm />
+    </section>
+  </main>
+  <Footer />
+  <div class="viewfinder" id="viewfinder" aria-hidden="true">
+    <i class="vf-c tl"></i><i class="vf-c tr"></i><i class="vf-c bl"></i><i class="vf-c br"></i>
+    <span class="vf-rec"><i></i>REC <b id="vfTime">00:00:00</b></span><span class="vf-meta">4K · 30fps · ISO 400</span><span class="vf-cross"></span>
+  </div>
+</Layout>

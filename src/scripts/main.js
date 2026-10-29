@@ -40,19 +40,32 @@ function burst(x,y,n=70){
     parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-5,s:6+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.5,c:cols[i%cols.length],l:1});}
   if(!raf) raf=requestAnimationFrame(tick);
 }
+/* gold coins: falling from the top (rain) or bursting from a point */
+function coins(n=40,x,y){
+  if(reduce) return;
+  const gold=getComputedStyle(root).getPropertyValue('--gold').trim();
+  for(let i=0;i<n;i++){ const rain=x==null, a=Math.random()*Math.PI*2, sp=3+Math.random()*7;
+    parts.push({coin:1,x:rain?Math.random()*innerWidth:x,y:rain?-20-Math.random()*innerHeight*.6:y,vx:rain?(Math.random()-.5)*1.5:Math.cos(a)*sp,vy:rain?2+Math.random()*3:Math.sin(a)*sp-6,s:8+Math.random()*6,r:Math.random()*6,vr:.08+Math.random()*.12,c:gold,l:1}); }
+  if(!raf) raf=requestAnimationFrame(tick);
+}
 function tick(){
   cx.clearRect(0,0,innerWidth,innerHeight);
   parts=parts.filter(p=>p.l>0&&p.y<innerHeight+40);
-  parts.forEach(p=>{p.vy+=.3;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.l-=.006;
-    cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=clamp(p.l*2,0,1);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/3,p.s,p.s*.66);cx.restore();});
+  parts.forEach(p=>{p.vy+=p.coin?.18:.3;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.l-=p.coin?.003:.006;
+    cx.save();cx.translate(p.x,p.y);cx.globalAlpha=clamp(p.l*2,0,1);
+    if(p.coin){ cx.scale(Math.cos(p.r),1); cx.beginPath();cx.arc(0,0,p.s,0,Math.PI*2);cx.fillStyle=p.c;cx.fill();cx.lineWidth=2;cx.strokeStyle='rgba(0,0,0,.18)';cx.stroke();
+      cx.fillStyle='rgba(27,20,33,.55)';cx.font=`800 ${p.s*1.1}px system-ui,sans-serif`;cx.textAlign='center';cx.textBaseline='middle';cx.fillText('$',0,1); }
+    else { cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/3,p.s,p.s*.66); }
+    cx.restore();});
   raf=parts.length?requestAnimationFrame(tick):0;
   if(!raf) cx.clearRect(0,0,innerWidth,innerHeight);
 }
 
 /* hero rotator */
-const rotEl=$('#rot'); const roles=JSON.parse(rotEl.dataset.roles||'[]'); if(!roles.length) roles.push(rotEl.textContent);
-let ri=0;
-if(!reduce){ setInterval(()=>{
+const rotEl=$('#rot');
+if(rotEl&&!reduce){ const roles=JSON.parse(rotEl.dataset.roles||'[]'); if(!roles.length) roles.push(rotEl.textContent);
+  let ri=0;
+  setInterval(()=>{
   rotEl.classList.add('out');
   setTimeout(()=>{ri=(ri+1)%roles.length; rotEl.textContent=roles[ri]; rotEl.classList.remove('out'); rotEl.classList.add('in2'); setTimeout(()=>rotEl.classList.remove('in2'),480)},300);
 },2600); }
@@ -61,7 +74,7 @@ if(reduce) $$('.traveller').forEach(n=>n.remove());
 
 /* hero parallax */
 const hero=$('#hero'), collage=$('#collage');
-if(fine&&!reduce){
+if(hero&&fine&&!reduce){
   hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();
     collage.style.setProperty('--mx',((e.clientX-r.left)/r.width-.5)*2);
     collage.style.setProperty('--my',((e.clientY-r.top)/r.height-.5)*2);});
@@ -111,7 +124,7 @@ worlds.forEach((w,i)=>{
   if(fine) w.addEventListener('pointerenter',()=>{ if(!w.classList.contains('active')) setWorld(i) });
   h.addEventListener('focus',()=>{ if(!w.classList.contains('active')) setWorld(i) });
 });
-setWorld(0);
+if(worlds.length) setWorld(0);
 
 /* counters */
 function runCount(el){
@@ -145,10 +158,9 @@ function onScroll(){
   requestAnimationFrame(()=>{
     const max=document.documentElement.scrollHeight-innerHeight;
     prog.style.transform=`scaleX(${max>0?clamp(scrollY/max,0,1):0})`;
-    const r=track.getBoundingClientRect();
-    track.style.setProperty('--p',clamp((innerHeight*.5-r.top)/r.height,0,1));
+    if(track){ const r=track.getBoundingClientRect(); track.style.setProperty('--p',clamp((innerHeight*.5-r.top)/r.height,0,1)); }
     vel+=(clamp((scrollY-lastY)*.25,-8,8)-vel)*.4; lastY=scrollY;
-    if(!reduce) mq.style.transform=`skewX(${-vel}deg)`;
+    if(mq&&!reduce) mq.style.transform=`skewX(${-vel}deg)`;
     ticking=false;
   });
 }
@@ -168,12 +180,18 @@ chips.forEach(c=>c.addEventListener('click',e=>{
 $$('.fc-in').forEach(b=>b.addEventListener('click',()=>b.classList.toggle('flipped')));
 
 /* form */
-$('#hello').addEventListener('submit',e=>{
+/* contact form: posts to Netlify Forms without leaving the page */
+$('#hello')?.addEventListener('submit',async e=>{
   e.preventDefault();
-  const name=$('#f-name').value.trim()||'there';
-  $('#formMsg').textContent=`Thanks, ${name}. In the finished site this would reach Jagriti.`;
+  const f=e.currentTarget, msg=$('#formMsg'), name=$('#f-name').value.trim()||'there';
   const r=e.submitter?e.submitter.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
-  burst(r.left+r.width/2,r.top+r.height/2,90);
+  msg.textContent='Sending…';
+  try{
+    const res=await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(f)).toString()});
+    if(!res.ok) throw new Error(res.status);
+    msg.textContent=`Thanks, ${name}. Jagriti will be in touch soon.`; f.reset();
+    burst(r.left+r.width/2,r.top+r.height/2,90);
+  }catch(err){ msg.textContent='That did not send. Please try again, or message @jaginmelbourne on Instagram.'; }
 });
 
 /* ===== v3: media, tips, hats, sound ===== */
@@ -243,7 +261,7 @@ $('#hello').addEventListener('submit',e=>{
   let sx=0, down=false;
   deck.addEventListener('pointerdown',e=>{down=true;sx=e.clientX});
   deck.addEventListener('pointercancel',()=>{down=false});
-  deck.addEventListener('pointerup',e=>{ if(!down) return; down=false; const dx=e.clientX-sx; if(dx<-50) go(1); else if(dx>50) go(-1); else flip(); });
+  deck.addEventListener('pointerup',e=>{ if(!down) return; down=false; if(e.target.closest('a')) return; const dx=e.clientX-sx; if(dx<-50) go(1); else if(dx>50) go(-1); else flip(); });
   deck.addEventListener('keydown',e=>{ if(e.key==='ArrowRight') go(1); else if(e.key==='ArrowLeft') go(-1); else if(e.key==='Enter'||e.key===' '){e.preventDefault();flip()} });
   $('#gPrev').addEventListener('click',()=>go(-1)); $('#gNext').addEventListener('click',()=>go(1));
   paint();
@@ -254,7 +272,7 @@ $('#hello').addEventListener('submit',e=>{
 (function(){
   const rules=$$('.rule'); if(!rules.length||reduce) return;
   const D=14, FLEE=170, CRUISE=.6, live=new Set(); let px=-1e4, py=-1e4, raf=0, tapT=0;
-  const dots=rules.map(el=>({el,dot:$('.rule-dot',el),x:0,y:0,v:0,vy:0,dir:Math.random()<.5?-1:1,min:0,max:0,cool:0,placed:false}));
+  const dots=rules.map(el=>({el,dot:$('.rule-dot',el),coin:el.dataset.mode==='coin',x:0,y:0,v:0,vy:0,dir:Math.random()<.5?-1:1,min:0,max:0,cool:0,placed:false,gone:0}));
   function measure(){ dots.forEach(d=>{ const w=d.el.getBoundingClientRect().width, o=d.dot.offsetLeft;
     d.min=8-o; d.max=w-o-D-8;
     if(!d.placed){ d.x=d.min+(d.max-d.min)*(.1+Math.random()*.3); d.placed=true; }
@@ -263,6 +281,15 @@ $('#hello').addEventListener('submit',e=>{
     const r=d.el.getBoundingClientRect(), cx=r.left+d.dot.offsetLeft+d.x+D/2, cy=r.top+D/2+d.y;
     const dx=cx-px, dy=cy-py, dist=Math.hypot(dx,dy), grounded=d.y===0;
     if(d.cool>0) d.cool--;
+    if(d.coin){
+      if(d.gone){ if(--d.gone===0){ d.x=Math.random()<.5?d.min:d.max; d.v=0; d.dot.classList.remove('got'); } return; }
+      if(dist<FLEE*1.4){ const to=-(Math.sign(dx)||1); d.dir=to; d.v+=to*(1-dist/(FLEE*1.4))*.9; }
+      if(dist<D+10){ coins(14,cx,cy); d.dot.classList.add('got'); d.gone=80; saved(1); return; }
+      d.v+=(d.dir*CRUISE-d.v)*.03; d.v=clamp(d.v,-9,9); d.x=clamp(d.x+d.v,d.min,d.max);
+      if(d.x===d.min||d.x===d.max) d.dir*=-1;
+      d.dot.style.translate=`${d.x}px 0px`; d.dot.style.rotate=`${d.x*4}deg`;
+      return;
+    }
     if(dist<FLEE&&d.cool===0){
       const away=Math.sign(dx)||d.dir;
       d.dir=away; d.v+=away*(1-dist/FLEE)*2.4;
@@ -290,6 +317,45 @@ $('#hello').addEventListener('submit',e=>{
     rules.forEach(el=>io.observe(el));
   }
 })();
+
+/* ===== easter eggs on the gyan and work pages ===== */
+
+/* coin counter: coins collected from the gyan dividers, kept per browser */
+function saved(n){
+  let t=0; try{ t=(+localStorage.getItem('jv-coins')||0)+n; localStorage.setItem('jv-coins',t); }catch(e){ t=(saved.t=(saved.t||0)+n); }
+  let el=$('#coinToast'); if(!el){ el=document.createElement('p'); el.id='coinToast'; el.className='coin-toast'; el.setAttribute('role','status'); document.body.appendChild(el); }
+  el.innerHTML=`<i></i><span><b>${t}</b> ${t===1?'coin':'coins'} saved</span>`; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  clearTimeout(saved.h); saved.h=setTimeout(()=>el.classList.remove('show'),2600);
+  if(t%10===0) coins(60);
+}
+
+if(document.body.dataset.page==='gyan'){
+  /* the jar on /gyan: tap it and it shakes out a coin shower */
+  const jar=$('.gy-jar');
+  jar?.addEventListener('click',()=>{ jar.classList.remove('shake'); void jar.offsetWidth; jar.classList.add('shake'); coins(50); });
+  /* type "gyan" anywhere for coin rain */
+  let typed='';
+  addEventListener('keydown',e=>{ if(e.target.closest&&e.target.closest('input,textarea')) return; typed=(typed+e.key.toLowerCase()).slice(-4); if(typed==='gyan'){ coins(80); typed=''; } });
+  /* finishing an article stamps it */
+  const end=$('#tipEnd');
+  if(end&&'IntersectionObserver' in window){
+    const so=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ end.classList.add('in'); const r=$('.stamp',end).getBoundingClientRect(); setTimeout(()=>coins(24,r.left+r.width/2,r.top+r.height/2),380); so.disconnect(); } }),{threshold:.8});
+    so.observe(end);
+  }
+}
+
+if(document.body.dataset.page==='work'){
+  /* the "Open to collaborations" pill starts a fake recording: viewfinder + timecode */
+  const rec=$('#rec'), vf=$('#viewfinder'), tc=$('#vfTime'); let t0=0, h=0;
+  const pad=n=>String(n).padStart(2,'0');
+  rec?.addEventListener('click',()=>{
+    const on=!document.body.classList.contains('rolling');
+    document.body.classList.toggle('rolling',on); rec.setAttribute('aria-pressed',String(on));
+    clearInterval(h);
+    if(on){ t0=Date.now(); tc.textContent='00:00:00'; h=setInterval(()=>{ const s=Math.floor((Date.now()-t0)/1000); tc.textContent=`${pad(Math.floor(s/3600))}:${pad(Math.floor(s/60)%60)}:${pad(s%60)}`; },250); }
+  });
+  addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.body.classList.contains('rolling')) rec.click(); });
+}
 
 /* sound: optional licensed file, otherwise a soft generated loop */
 (function(){

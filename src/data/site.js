@@ -25,29 +25,7 @@ export const site = {
   /* Shown as "coming soon" reels until real videos are in media/reels */
   placeholderReels: ['Glamping', 'Hotham 2026', 'Perth 2026', 'Banker to broker', 'Free ka gyan', 'Skincare'],
   /* How many "coming soon" photo tiles to show while media/photos is empty */
-  placeholderPhotos: 13,
-
-  /* Brands she has made content for. Names only until each brand has agreed to a logo being shown. */
-  brands: ['SHEIN'],
-  brandSlots: 5,
-
-  /* Free ka gyan cards. General information only. */
-  tips: [
-    { tag: 'Pre-approval', q: 'Pre-approved means the house is sorted, right?',
-      a: 'Not quite. Pre-approval is a lender’s conditional yes on how much you could borrow. It can change if your finances or the property change, so treat it as a green light to start looking, not a promise.' },
-    { tag: 'Rates', q: 'Which number should I compare on a loan?',
-      a: 'Look at the comparison rate as well as the headline rate. It rolls most fees into one figure, so two loans are easier to compare side by side.' },
-    { tag: 'Credit file', q: 'Does applying at lots of lenders hurt?',
-      a: 'Each credit application can leave an enquiry on your credit file, and a pile of them can look risky. Talk it through first, then apply where it makes sense.' },
-    { tag: 'Costs', q: 'Is the deposit the only cost?',
-      a: 'No. Budget for stamp duty (it varies by state), legal or conveyancing fees, building and pest checks, and moving costs. Leaving these out is a common surprise.' },
-    { tag: 'Borrowing', q: 'What do lenders actually look at?',
-      a: 'Not just income. They look at spending, debts, credit card limits and dependants too. Even an unused card limit can reduce how much you can borrow.' },
-    { tag: 'Offset', q: 'What is an offset account?',
-      a: 'A transaction account linked to your loan, on loans that offer one. The balance in it is offset against your loan when interest is worked out, so you can pay less interest and still reach your cash.' },
-    { tag: 'Check-up', q: 'How often should I review my loan?',
-      a: 'A yearly check is a good habit. Rates and products change, and the loan that suited you at the start may not still be the best fit.' },
-    { tag: 'Deposit', q: 'Can I buy with less than a 20% deposit?',
-      a: 'Often yes. With a smaller deposit a lender may charge lenders mortgage insurance, and some schemes can help first home buyers. What applies to you depends on your situation, so ask before you assume.' }
-  ]
+  placeholderPhotos: 13
+  /* Brands, formats and the work page live in src/data/work.json.
+     Free ka gyan tips live in src/content/gyan/, one file per question. */
 };

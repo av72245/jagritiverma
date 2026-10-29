@@ -1,0 +1,31 @@
+{
+  "headline": "Let's make something people watch twice.",
+  "intro": "Melbourne lifestyle creator, mortgage broker and founder. Brands come for the content, clients come for the clarity. Here's how we can work together.",
+  "email": "",
+  "stats": [
+    { "value": "10.3K", "label": "followers on @jaginmelbourne" },
+    { "value": "4", "label": "channels, four moods" },
+    { "value": "5+", "label": "years in lending" },
+    { "value": "MEL", "label": "based in Melbourne, shoots anywhere" }
+  ],
+  "audience": "Mostly 25 to 40, Melbourne and wider Australia, with a strong Indian-Australian community. Interested in travel, food, lifestyle and getting smarter with money. Audience numbers to be confirmed with Jagriti.",
+  "formats": [
+    { "name": "UGC video", "colour": "rose", "front": "A vertical video made for your brand, ready to post or run as an ad.", "backTitle": "Rates on request", "back": "Concept, filming, edit and usage rights agreed up front." },
+    { "name": "Reel feature", "colour": "sea", "front": "Your product or place, shown to her audience in her own voice.", "backTitle": "Rates on request", "back": "Posted on the channel that fits your brand best." },
+    { "name": "Ongoing partner", "colour": "gold", "front": "A longer run of content across channels, with room to grow the idea.", "backTitle": "Let's talk", "back": "Built around your goals, with a plan for each month." }
+  ],
+  "brands": ["SHEIN"],
+  "brandSlots": 5,
+  "process": [
+    { "title": "Say hello", "text": "Send a short note about your brand and what you have in mind." },
+    { "title": "Shape the idea", "text": "We agree the concept, deliverables, timing and usage rights." },
+    { "title": "Shoot and edit", "text": "Jagriti creates the content, with a review round before anything goes live." },
+    { "title": "Go live", "text": "Content is posted or delivered, and you get the results that matter to you." }
+  ],
+  "faqs": [
+    { "q": "How far ahead should we book?", "a": "Two to four weeks is ideal for most content. Get in touch sooner for launches or travel shoots." },
+    { "q": "Can we use the content in ads?", "a": "Yes. Usage rights, including paid ads, are agreed up front as part of the brief." },
+    { "q": "Do you work with brands outside Melbourne?", "a": "Yes. Products can be sent to Melbourne, and travel shoots can be arranged." },
+    { "q": "Do you work with finance brands?", "a": "Because Jagriti is a mortgage broker, finance-related partnerships are considered case by case to avoid any conflict of interest." }
+  ]
+}

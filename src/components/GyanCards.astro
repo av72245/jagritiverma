@@ -1,0 +1,15 @@
+---
+/* Grid of question cards linking to each tip page */
+const { tips, current = '' } = Astro.props;
+---
+<ul class="gy-grid">
+  {tips.filter((t) => t.id !== current).map((t, i) => (
+    <li class="rv" style={`--d:${(i % 4) * 0.06}s`}>
+      <a class="gy-card tilt" href={`/gyan/${t.id}`} style={`--c:var(${t.c});--on:var(${t.on})`} data-cursor="Read">
+        <span class="g-tag">{t.data.tag}</span>
+        <h3>{t.data.question}</h3>
+        <span class="gy-go" aria-hidden="true">→</span>
+      </a>
+    </li>
+  ))}
+</ul>

@@ -1,0 +1,22 @@
+---
+import work from '../data/work.json';
+/* Netlify Forms picks this up at deploy time; submissions show in the Netlify dashboard under Forms. */
+---
+<div class="desk">
+  <div class="rv">
+    <h3 class="h2" style="font-size:clamp(34px,5vw,60px)">Say hello.</h3>
+    <p class="lead">Tell Jagriti about your brand and what you have in mind{work.email
+      ? <Fragment>, email <a href={`mailto:${work.email}`}>{work.email}</a>,</Fragment>
+      : ','} or message <a href="https://www.instagram.com/jaginmelbourne/" target="_blank" rel="noopener">@jaginmelbourne</a> on Instagram.</p>
+  </div>
+  <form class="form rv" id="hello" name="hello" method="POST" data-netlify="true" netlify-honeypot="company-url" style="--d:.1s">
+    <input type="hidden" name="form-name" value="hello">
+    <p class="sr"><label>Leave this empty<input name="company-url" tabindex="-1" autocomplete="off"></label></p>
+    <label for="f-name">Your name<input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Alex Morgan"></label>
+    <label for="f-email">Email<input id="f-email" name="email" type="email" autocomplete="email" required placeholder="you@brand.com"></label>
+    <label for="f-brand">Brand or company<input id="f-brand" name="brand" type="text" autocomplete="organization" placeholder="Your brand"></label>
+    <label for="f-msg">What would you like to make together?<textarea id="f-msg" name="message" required placeholder="A short note is plenty."></textarea></label>
+    <div><button class="btn big mag" type="submit" data-cursor="Send">Send it</button></div>
+    <p class="msg" id="formMsg" role="status"></p>
+  </form>
+</div>

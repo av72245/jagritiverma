@@ -2,6 +2,20 @@
 
 Animated portfolio for Jagriti Verma (Melbourne lifestyle creator), built with [Astro](https://astro.build). Each section is its own component, and the build outputs plain static HTML, so everything is readable by search engines without JavaScript.
 
+## Editing the site in a browser (for Jagriti)
+
+The easiest way to edit is **Pages CMS**, a free editor that gives you simple forms and needs no code.
+
+1. Go to [app.pagescms.org](https://app.pagescms.org) and sign in with GitHub. Your GitHub account needs access to this repository.
+2. Open **av72245/jagritiverma**.
+3. Use the menu on the left:
+   - **Free ka gyan:** add, edit or reorder money questions. Each one gets its own page at `/gyan/<question>`.
+   - **Work with me page:** numbers, audience, collaboration formats, brands, steps, FAQs and contact email.
+   - **Media:** upload photos, reels, the Banker / Broker / Founder photos and the portrait.
+4. Press **Save**. The site updates about a minute later.
+
+The editor settings live in `.pages.yml`.
+
 ## Adding photos and reels (no code needed)
 
 Drop files into these folders, commit, and the site rebuilds on its own. On github.com: open the folder, click **Add file → Upload files**, drag the files in and press **Commit changes**. Netlify redeploys in about a minute.
@@ -37,17 +51,35 @@ While a folder is empty, the site shows "coming soon" tiles, so photos and reels
 
 ## Changing wording
 
-Most text lives in `src/data/site.js`: the rotating hero words, the marquee, brands, the Free ka gyan tips and the page title and description. Section-specific copy is in the matching file in `src/components/`.
+- **Free ka gyan:** one Markdown file per question in `src/content/gyan/`. The filename is the page address (`offset-account.md` becomes `/gyan/offset-account`). The answers are drafts, and Jagriti should check each one, and ideally clear them with KIN Finance compliance, before launch.
+- **Work with me page, brands and collaboration formats:** `src/data/work.json`.
+- **Hero words, marquee and page title:** `src/data/site.js`.
+- Anything else is in the matching file in `src/components/`.
+
+## Pages
+
+- `/`: the main one-page scroll
+- `/gyan`: all money questions, plus `/gyan/<question>` for each one
+- `/work`: media kit for brands, with the contact form
+
+The contact form uses Netlify Forms. Submissions appear in the Netlify dashboard under **Forms**, where you can also turn on email notifications.
+
+## Easter eggs
+
+- **Home:** the dot on each divider runs from your cursor, hops over you when cornered, and bursts if you catch it.
+- **Gyan pages:** the coin on each divider rolls to your cursor. Collect it and a counter keeps your "coins saved" (every 10th coin starts a coin shower). Tap the jar on `/gyan` to shake out coins, type "gyan" anywhere for coin rain, and finishing an article stamps it "Gyan unlocked".
+- **Work page:** click "Open to collaborations" to start recording, with a camera viewfinder and running timecode. Press Esc to stop.
 
 ## Structure
 
     src/
       components/   Header, Hero, Marquee, Divider, Channels, Reels, Story,
-                    Photos, Gyan, Wealth, Work, Footer
-      data/site.js  editable wording
+                    Photos, Gyan, GyanCards, Wealth, Work, Formats, HelloForm, Footer
+      content/gyan/ one Markdown file per money question
+      data/         site.js (general wording), work.json (work page)
       lib/media.js  reads the media folders at build time
       layouts/      page head: SEO tags, schema, fonts
-      pages/        index page, robots.txt, og.png share image
+      pages/        home, gyan/, work, robots.txt, og.png share image
       scripts/      animations and interactions
       styles/       global.css
     media/          upload folders (see above)
@@ -84,5 +116,5 @@ Deploys to Netlify using `netlify.toml` (build `npm run build`, publish `dist`).
 - Portrait, reels, photos and hat photos (folders are ready)
 - Brand names beyond SHEIN, and the men's skincare brand name
 - Collaboration formats and "Rates on request" wording
-- Contact form (does not send anything yet) and a direct email address
+- Contact email in `work.json`, and audience numbers on the work page
 - Job titles: check each against what KIN Finance and her credit licence allow before launch

@@ -1,0 +1,90 @@
+---
+import { render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Divider from '../../components/Divider.astro';
+import GyanCards from '../../components/GyanCards.astro';
+import { getTips } from '../../lib/gyan.js';
+
+export async function getStaticPaths() {
+  const tips = await getTips();
+  return tips.map((tip) => ({ params: { slug: tip.id }, props: { tip, tips } }));
+}
+
+const { tip, tips } = Astro.props;
+const { Content, headings } = await render(tip);
+const d = tip.data;
+const url = new URL(`/gyan/${tip.id}`, Astro.site).href;
+const words = (tip.body || '').split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 220));
+const updated = d.updated.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: d.question,
+    description: d.description,
+    url,
+    dateModified: d.updated.toISOString(),
+    author: { '@id': new URL('/#jagriti', Astro.site).href },
+    publisher: { '@id': new URL('/#jagriti', Astro.site).href },
+    inLanguage: 'en-AU'
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [{ '@type': 'Question', name: d.question, acceptedAnswer: { '@type': 'Answer', text: d.short } }]
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: 'Free ka gyan', item: new URL('/gyan', Astro.site).href },
+      { '@type': 'ListItem', position: 3, name: d.question, item: url }
+    ]
+  }
+];
+---
+<Layout title={`${d.question} | Free ka gyan by Jagriti Verma`} description={d.description} jsonLd={jsonLd} world={tip.c} page="gyan" ogType="article">
+  <Header />
+  <main class="wrap" id="top">
+    <article class="tip">
+      <header class="tip-head">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/gyan">Free ka gyan</a><span aria-hidden="true">/</span><span aria-current="page">{d.tag}</span></nav>
+        <p class="pill"><span class="dot"></span>{d.tag} · {minutes} min read</p>
+        <h1 class="tip-q rv">{d.question}</h1>
+        <div class="tip-short rv" style={`--d:.1s;--c:var(${tip.c});--on:var(${tip.on})`}>
+          <span class="g-tag">The short answer</span>
+          <p>{d.short}</p>
+        </div>
+      </header>
+
+      <div class="tip-layout">
+        {headings.length > 1 && (
+          <aside class="tip-toc" aria-label="On this page">
+            <p class="g-tag">On this page</p>
+            {headings.filter((h) => h.depth === 2).map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+          </aside>
+        )}
+        <div class="prose">
+          <Content />
+          <div class="tip-end" id="tipEnd">
+            <span class="stamp" aria-hidden="true">Gyan<br>unlocked</span>
+            <p>Want this worked out for your situation? Jagriti is a mortgage broker at KIN Finance. Message <a href="https://www.instagram.com/mortgagebroker_jag/" target="_blank" rel="noopener">@mortgagebroker_jag</a> on Instagram.</p>
+          </div>
+          <p class="note">Last reviewed {updated}. General information only. It is not financial or credit advice, and it doesn't take your objectives, finances or needs into account. Speak to a licensed professional about your own situation.</p>
+        </div>
+      </div>
+    </article>
+
+    <section class="sec">
+      <Divider mode="coin" />
+      <h2 class="h2 rv">More gyan.</h2>
+      <GyanCards tips={tips} current={tip.id} />
+    </section>
+  </main>
+  <Footer />
+</Layout>

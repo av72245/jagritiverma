@@ -1,0 +1,55 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Divider from '../../components/Divider.astro';
+import GyanCards from '../../components/GyanCards.astro';
+import { getTips } from '../../lib/gyan.js';
+
+const tips = await getTips();
+const title = 'Free ka gyan: home loan questions, answered simply | Jagriti Verma';
+const description = 'Plain-language answers to common Australian home loan questions, from pre-approval and offset accounts to deposits and borrowing power. By Melbourne mortgage broker Jagriti Verma.';
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Free ka gyan',
+    description,
+    hasPart: tips.map((t) => ({ '@type': 'Article', headline: t.data.question, url: new URL(`/gyan/${t.id}`, Astro.site).href }))
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: 'Free ka gyan', item: new URL('/gyan', Astro.site).href }
+    ]
+  }
+];
+---
+<Layout title={title} description={description} jsonLd={jsonLd} world="--gold" page="gyan">
+  <Header />
+  <main class="wrap" id="top">
+    <section class="hero gy-hero">
+      <div class="blobs" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i></div>
+      <div>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Free ka gyan</span></nav>
+        <h1 data-split>Free ka gyan</h1>
+        <p class="lede rv">Money questions, answered simply. No jargon, no sales pitch.</p>
+        <p class="sub rv" style="--d:.1s">The questions people actually ask Jagriti about home loans, explained the way she would over chai. Pick one to read the full answer.</p>
+      </div>
+      <div class="gy-jar rv" style="--d:.15s" aria-hidden="true" data-cursor="Shake">
+        <span class="jar-lid"></span>
+        <span class="jar-body"><b>{tips.length}</b><small>questions so far</small></span>
+      </div>
+    </section>
+
+    <section class="sec">
+      <Divider mode="coin" />
+      <h2 class="h2 rv">Pick a question.</h2>
+      <GyanCards tips={tips} />
+      <p class="note rv" style="margin-top:28px">General information only. It is not financial or credit advice. Speak to a licensed professional about your own situation.</p>
+    </section>
+  </main>
+  <Footer />
+</Layout>

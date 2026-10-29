@@ -1,0 +1,12 @@
+---
+import work from '../data/work.json';
+const ON = { royal: '--on-royal' };
+---
+<div class="formats">
+  {work.formats.map((f, i) => (
+    <div class="fc rv" style={`--d:${i * 0.08}s`}><button class="fc-in" type="button" aria-label={`Flip card: ${f.name}`} data-cursor="Flip">
+      <span class="face-f" style={`--c:var(--${f.colour || 'rose'});--on:var(${ON[f.colour] || '--on-pop'})`}><span class="hint">Format</span><span><h3>{f.name}</h3><p>{f.front}</p></span><span class="hint">Tap to flip</span></span>
+      <span class="face-b"><span class="hint">What you get</span><span><h3>{f.backTitle}</h3><p>{f.back}</p></span><span class="hint">Tap to flip back</span></span>
+    </button></div>
+  ))}
+</div>
