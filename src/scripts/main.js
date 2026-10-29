@@ -249,6 +249,48 @@ $('#hello').addEventListener('submit',e=>{
   paint();
 })();
 
+/* section rules: the dot patrols its line and runs from the cursor.
+   Cornered at an edge, it hops over you. Catch it and it bursts. */
+(function(){
+  const rules=$$('.rule'); if(!rules.length||reduce) return;
+  const D=14, FLEE=170, CRUISE=.6, live=new Set(); let px=-1e4, py=-1e4, raf=0, tapT=0;
+  const dots=rules.map(el=>({el,dot:$('.rule-dot',el),x:0,y:0,v:0,vy:0,dir:Math.random()<.5?-1:1,min:0,max:0,cool:0,placed:false}));
+  function measure(){ dots.forEach(d=>{ const w=d.el.getBoundingClientRect().width, o=d.dot.offsetLeft;
+    d.min=8-o; d.max=w-o-D-8;
+    if(!d.placed){ d.x=d.min+(d.max-d.min)*(.1+Math.random()*.3); d.placed=true; }
+    d.x=clamp(d.x,d.min,d.max); }); }
+  function step(d){
+    const r=d.el.getBoundingClientRect(), cx=r.left+d.dot.offsetLeft+d.x+D/2, cy=r.top+D/2+d.y;
+    const dx=cx-px, dy=cy-py, dist=Math.hypot(dx,dy), grounded=d.y===0;
+    if(d.cool>0) d.cool--;
+    if(dist<FLEE&&d.cool===0){
+      const away=Math.sign(dx)||d.dir;
+      d.dir=away; d.v+=away*(1-dist/FLEE)*2.4;
+      const cornered=(away<0&&d.x-d.min<40)||(away>0&&d.max-d.x<40);
+      if(cornered&&grounded&&dist<90){ d.dir=-away; d.v=-away*17; d.vy=-11; d.cool=25; }
+      if(dist<D&&grounded&&d.cool===0){ burst(cx,cy,36); d.dot.classList.remove('caught'); void d.dot.offsetWidth; d.dot.classList.add('caught'); d.dir=-away; d.v=-away*18; d.vy=-12; d.cool=40; }
+    }
+    d.v+=(d.dir*CRUISE-d.v)*.035; d.v=clamp(d.v,-24,24);
+    d.x+=d.v;
+    if(d.x<=d.min){d.x=d.min; d.dir=1; d.v=Math.abs(d.v)*.5;}
+    else if(d.x>=d.max){d.x=d.max; d.dir=-1; d.v=-Math.abs(d.v)*.5;}
+    if(!grounded||d.vy){ d.vy+=.9; d.y=Math.min(0,d.y+d.vy); if(d.y===0) d.vy=0; }
+    const sq=1+Math.min(.45,Math.abs(d.v)/30);
+    d.dot.style.translate=`${d.x}px ${d.y}px`;
+    d.dot.style.scale=`${sq} ${1/sq}`;
+  }
+  function loop(){ live.forEach(step); if(tapT&&performance.now()>tapT){px=py=-1e4;tapT=0} raf=live.size?requestAnimationFrame(loop):0; }
+  addEventListener('pointermove',e=>{ if(e.pointerType==='mouse'){px=e.clientX;py=e.clientY} },{passive:true});
+  addEventListener('pointerdown',e=>{ px=e.clientX;py=e.clientY; tapT=performance.now()+700; },{passive:true});
+  document.addEventListener('mouseleave',()=>{px=py=-1e4});
+  addEventListener('resize',measure);
+  measure();
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{ const d=dots.find(x=>x.el===e.target); e.isIntersecting?live.add(d):live.delete(d); }); if(live.size&&!raf) raf=requestAnimationFrame(loop); });
+    rules.forEach(el=>io.observe(el));
+  }
+})();
+
 /* sound: optional licensed file, otherwise a soft generated loop */
 (function(){
   const btn=$('#snd'); if(!btn) return;

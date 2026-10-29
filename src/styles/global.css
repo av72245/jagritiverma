@@ -152,8 +152,11 @@ h1,h2,h3,p{margin:0}
 .js .rule .rule-line{transform:scaleX(0);transition:transform 1.4s cubic-bezier(.6,0,.2,1)}
 .js .rule .rule-dot{transform:scale(0);transition:transform .6s var(--ease) .5s,background-color .5s}
 .js .rule.in .rule-line{transform:none}
-.js .rule.in .rule-dot{transform:none;animation:ruleDot 9s ease-in-out 1.6s infinite alternate}
-@keyframes ruleDot{to{translate:min(calc(100vw - 2 * var(--gutter) - 14px),calc(var(--maxw) - 2 * var(--gutter) - 14px)) 0}}
+.js .rule.in .rule-dot{transform:none}
+/* main.js moves the dot with `translate` and squashes it with `scale` while it runs */
+.rule-dot{will-change:translate}
+.rule-dot.caught{animation:caught .5s var(--ease)}
+@keyframes caught{50%{box-shadow:0 0 0 5px var(--paper),0 0 0 14px var(--world)}}
 .sub-h{font:700 15px var(--f-label);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
 .h2{font:800 clamp(38px,7vw,88px)/.95 var(--f-display);letter-spacing:-.03em;margin:0 0 18px;text-wrap:balance}
 .lead{max-width:36em;color:var(--ink-soft);font-size:18px}
