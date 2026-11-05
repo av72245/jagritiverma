@@ -5,7 +5,7 @@
 export const site = {
   name: 'Jagriti Verma',
   title: 'Jagriti Verma | Melbourne lifestyle creator and mortgage broker',
-  description: 'Jagriti Verma is a Melbourne lifestyle creator (@jaginmelbourne), mortgage broker at KIN Finance and founder of Women Wealth Circle. Reels, money tips and brand collaborations.',
+  description: 'Jagriti Verma is a Melbourne lifestyle creator (@jaginmelbourne), mortgage broker at KIN Finance and founder of Proj.Care. Reels, money tips and brand collaborations.',
   instagram: 'https://www.instagram.com/jaginmelbourne/',
   sameAs: [
     'https://www.instagram.com/jaginmelbourne/',
@@ -14,10 +14,10 @@ export const site = {
   ],
 
   /* Words that rotate in the hero line: "Creator in Melbourne. Also a ___." */
-  roles: ['mortgage broker', 'unfiltered optimist', 'community founder', 'skincare founder', 'former credit assessor', 'former engineer', 'creator'],
+  roles: ['mortgage broker', 'unfiltered optimist', 'skincare founder', 'former credit assessor', 'former engineer', 'creator'],
 
   /* Scrolling band under the hero */
-  marquee: ['Lifestyle', 'Melbourne', 'Free ka gyan', 'Banker to broker', "Men's skincare", 'Glamping', 'Home loans', 'Unfiltered optimist'],
+  marquee: ['Lifestyle', 'Melbourne', 'Free ka gyan', 'Banker to broker', 'Proj.Care', 'Glamping', 'Home loans', 'Unfiltered optimist'],
 
   /* Optional licensed music file in public/, e.g. '/audio/theme.mp3'. Empty = built-in soft synth loop. */
   audio: '',

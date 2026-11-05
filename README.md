@@ -114,7 +114,4 @@ Deploys to Netlify using `netlify.toml` (build `npm run build`, publish `dist`).
 ## Still placeholders
 
 - Portrait, reels, photos and hat photos (folders are ready)
-- Brand names beyond SHEIN, and the men's skincare brand name
-- Collaboration formats and "Rates on request" wording
-- Contact email in `work.json`, and audience numbers on the work page
 - Job titles: check each against what KIN Finance and her credit licence allow before launch
