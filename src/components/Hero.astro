@@ -8,6 +8,7 @@ const ph = site.placeholderReels;
 const cardTitles = reels.length
   ? [...new Set([...reels.map((r) => r.title), ...ph])].slice(0, 4)
   : [ph[0], ph[1], ph[4], ph[3]];
+const cardReels = cardTitles.map((t) => reels.find((r) => r.title === t));
 const cards = [
   { r: '-8deg', d: 18, pos: 'left:0;top:2%', g: ['--rose', '--gold'] },
   { r: '7deg', d: -22, pos: 'right:0;top:0', g: ['--sea', '--gold'] },
@@ -31,8 +32,9 @@ const cards = [
   <div class="collage" id="collage">
     {cards.map((c, i) => (
       <div class="card" style={`--r:${c.r};--d:${c.d};${c.pos}`}>
-        <div class="card-in tilt" style={`--g1:var(${c.g[0]});--g2:var(${c.g[1]})`} data-cursor="Play" tabindex="0" role="button" aria-label={`Play sample reel: ${cardTitles[i]}`}>
-          <span class="tag">Sample reel</span><span class="ct">{cardTitles[i]}</span><span class="play"></span>
+        <div class={`card-in tilt${cardReels[i] ? ' has-vid' : ''}`} style={`--g1:var(${c.g[0]});--g2:var(${c.g[1]})`} data-cursor="Play" tabindex="0" role="button" aria-label={`Play reel: ${cardTitles[i]}`}>
+          {cardReels[i] && <video class="card-vid" src={cardReels[i].src} poster={cardReels[i].poster} muted loop playsinline autoplay preload="metadata" aria-hidden="true"></video>}
+          <span class="tag">{cardReels[i] ? 'Reel' : 'Sample reel'}</span><span class="ct">{cardTitles[i]}</span><span class="play"></span>
           <span class="eq"><i></i><i></i><i></i><i></i></span><span class="bar-p"><i></i></span>
         </div>
       </div>

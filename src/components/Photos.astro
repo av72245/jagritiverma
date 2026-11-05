@@ -7,21 +7,55 @@ import { photos } from '../lib/media.js';
 const GR = [['--rose', '--gold'], ['--sea', '--gold'], ['--gold', '--pop'], ['--sea', '--rose'], ['--rose', '--pop'], ['--gold', '--sea']];
 const grad = (i) => `--g1:var(${GR[i % GR.length][0]});--g2:var(${GR[i % GR.length][1]})`;
 
+/* Polaroids pegged on fairy-light strands. Each frame takes its photo's own shape, so nothing is cropped.
+   The "random" scatter comes from a fixed seed, so the layout is the same on every visit. */
 const tiles = photos.length ? photos : Array.from({ length: site.placeholderPhotos }, () => ({ img: null, cap: '' }));
-/* 13 photos fill the hand-placed desktop layout; any other count flows into a dense grid with no gaps */
-const exact = tiles.length === 13;
+let seed = 7;
+const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+
+const PER = 5;                                  // photos per strand
+const SAG = [70, 95, 80];                       // how far each strand droops, in px
+const strands = [];
+for (let s = 0; s * PER < tiles.length; s++) {
+  const group = tiles.slice(s * PER, s * PER + PER);
+  const sag = SAG[s % SAG.length];
+  const items = group.map((p, j) => {
+    const t = (j + 0.5 + (rnd() - 0.5) * 0.35) / group.length;     // position along the strand, 0 to 1
+    return {
+      p, i: s * PER + j,
+      x: (6 + t * 88).toFixed(2),                                  // percent across
+      y: Math.round(4 * sag * t * (1 - t)),                        // px down the curve
+      drop: Math.round(rnd() * 26),                                // extra length of the peg's string
+      tilt: ((rnd() - 0.5) * 12).toFixed(1),
+      ar: p.img ? (p.img.width / p.img.height).toFixed(3) : 0.75
+    };
+  });
+  strands.push({ sag, items, flip: s % 2 === 1 });
+}
 ---
 <section class="sec" id="photos">
   <Divider />
   <h2 class="h2 rv">Moments.</h2>
-  <p class="lead rv">Hover over a photo to bring it forward. On a phone, tap it.</p>
-  <div class:list={['mosaic', { exact }]} id="mosaic">
-    {tiles.map((p, i) => (
-      <button type="button" class:list={['tile', `p${(i % 13) + 1}`, { m2: i % 13 === 0 || i % 13 === 7 }]} style={grad(i)} aria-label={p.cap || `Photo ${i + 1}`}>
-        <span class="ph">Photo coming soon</span>
-        {p.img && <Image src={p.img} alt={p.cap || `Jagriti Verma, photo ${i + 1}`} widths={[400, 800, 1400]} sizes="(max-width:700px) 66vw, 34vw" loading="lazy" />}
-        <span class="cap">{p.cap}</span>
-      </button>
+  <p class="lead rv">Hover over a photo to switch its light on. Click it to take it off the string.</p>
+  <div class="lights bleed rv" id="mosaic" aria-label="Photos">
+    {strands.map((st) => (
+      <div class="strand" style={`--sag:${st.sag}px`}>
+        <svg class="wire" viewBox={`0 0 1000 ${st.sag + 10}`} preserveAspectRatio="none" aria-hidden="true">
+          <path d={`M0 2 Q500 ${st.sag * 2} 1000 2`} vector-effect="non-scaling-stroke" />
+        </svg>
+        {st.items.map((it) => (
+          <button type="button" class="tile light" style={`${grad(it.i)};--x:${it.x}%;--y:${it.y}px;--drop:${it.drop}px;--t:${it.tilt}deg;--ar:${it.ar};--k:${it.i}`} aria-label={it.p.cap || `Photo ${it.i + 1}`}>
+            <span class="bulb" aria-hidden="true"></span>
+            <span class="peg" aria-hidden="true"></span>
+            <span class="frame">
+              {it.p.img
+                ? <Image src={it.p.img} alt={it.p.cap || `Jagriti Verma, photo ${it.i + 1}`} widths={[400, 800, 1400]} sizes="240px" loading="lazy" />
+                : <span class="ph">Photo coming soon</span>}
+              {it.p.cap && <span class="cap">{it.p.cap}</span>}
+            </span>
+          </button>
+        ))}
+      </div>
     ))}
   </div>
 </section>

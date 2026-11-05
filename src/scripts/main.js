@@ -196,6 +196,28 @@ $('#hello')?.addEventListener('submit',async e=>{
 
 /* ===== v3: media, tips, hats, sound ===== */
 
+
+/* lightbox: pops one reel (with sound) or photo, blurs the page behind */
+const lightbox=(function(){
+  const root=document.createElement('div'); root.className='lb'; root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-hidden','true');
+  root.innerHTML='<button class="lb-x" type="button" aria-label="Close">×</button><div class="lb-box"></div>';
+  document.body.appendChild(root);
+  const box=root.querySelector('.lb-box'), x=root.querySelector('.lb-x'); let last=null;
+  const open=(node,label)=>{ last=document.activeElement; box.replaceChildren(node); root.setAttribute('aria-label',label||'Media'); root.setAttribute('aria-hidden','false'); root.classList.add('on'); document.documentElement.classList.add('lb-open'); x.focus({preventScroll:true}); };
+  const close=()=>{ if(!root.classList.contains('on')) return; root.classList.remove('on'); root.setAttribute('aria-hidden','true'); document.documentElement.classList.remove('lb-open'); const v=box.querySelector('video'); if(v){v.pause();v.removeAttribute('src');v.load()} setTimeout(()=>{ if(!root.classList.contains('on')) box.replaceChildren() },400); last&&last.focus&&last.focus({preventScroll:true}); };
+  x.addEventListener('click',close);
+  root.addEventListener('click',e=>{ if(e.target===root) close() });
+  addEventListener('keydown',e=>{ if(e.key==='Escape') close() });
+  return {
+    reel(src,title){ const snd=document.getElementById('snd'); if(snd&&snd.getAttribute('aria-pressed')==='true') snd.click();
+      const v=document.createElement('video'); v.src=src; v.controls=true; v.playsInline=true; v.loop=true; v.autoplay=true; v.setAttribute('aria-label',title);
+      open(v,title); v.play().catch(()=>{ v.muted=true; v.play().catch(()=>{}) }); },
+    photo(src,alt,cap){ const f=document.createDocumentFragment(), i=document.createElement('img'); i.src=src; i.alt=alt||''; f.appendChild(i);
+      if(cap){ const c=document.createElement('p'); c.className='lb-cap'; c.textContent=cap; f.appendChild(c) }
+      open(f,alt); }
+  };
+})();
+
 /* reel wall (markup rendered at build time) */
 (function(){
   const vids=$$('.reel').map(el=>[el,$('video',el)]).filter(([,v])=>v);
@@ -206,8 +228,8 @@ $('#hello')?.addEventListener('submit',async e=>{
     v.addEventListener('error',()=>el.classList.add('empty'));
     const play=()=>{stopAll(v); v.play().then(()=>el.classList.add('playing')).catch(()=>{})};
     const stop=()=>{v.pause(); try{v.currentTime=0}catch(e){} el.classList.remove('playing')};
-    if(fine){ el.addEventListener('pointerenter',play); el.addEventListener('pointerleave',stop); $('.hit',el).addEventListener('focus',play); $('.hit',el).addEventListener('blur',stop); }
-    else { $('.hit',el).addEventListener('click',()=>{ if(el.classList.contains('playing')) stop(); else play(); }); }
+    if(fine){ el.addEventListener('pointerenter',play); el.addEventListener('pointerleave',stop); }
+    $('.hit',el).addEventListener('click',()=>{ stop(); lightbox.reel(v.getAttribute('src').split('#')[0], $('.meta b',el)?.textContent||''); });
   });
 })();
 
@@ -215,13 +237,15 @@ $('#hello')?.addEventListener('submit',async e=>{
 (function(){
   const box=$('#mosaic'); if(!box) return;
   const tiles=$$('.tile',box);
+  /* turn one hanger to face front: hover on desktop, the one nearest the middle on touch */
+  const front=t=>tiles.forEach(x=>x.classList.toggle('front',x===t));
+  if(fine){ tiles.forEach(t=>{ t.addEventListener('pointerenter',()=>front(t)); t.addEventListener('pointerleave',()=>front(null)); t.addEventListener('focus',()=>front(t)); }); }
+  else { const mid=()=>{ const c=innerWidth/2; let best=null,d=1e9; tiles.forEach(t=>{const r=t.getBoundingClientRect(), x=Math.abs(r.left+r.width/2-c); if(x<d){d=x;best=t}}); front(best) }; box.addEventListener('scroll',()=>requestAnimationFrame(mid),{passive:true}); mid(); }
   tiles.forEach(t=>{
-    const origin=()=>{const r=t.getBoundingClientRect(), cx=(r.left+r.width/2)/innerWidth; t.style.transformOrigin=(cx<.34?'0%':cx>.66?'100%':'50%')+' 50%'};
-    t.addEventListener('pointerenter',origin); t.addEventListener('focus',origin);
-    t.addEventListener('click',()=>{const was=t.classList.contains('open'); tiles.forEach(x=>x.classList.remove('open')); if(!was){origin(); t.classList.add('open')}});
+    t.addEventListener('click',()=>{ const img=$('img',t); if(!img) return;
+      const big=(img.getAttribute('srcset')||'').split(',').map(x=>x.trim().split(' ')[0]).filter(Boolean).pop()||img.currentSrc||img.src;
+      lightbox.photo(big, img.alt, $('.cap',t)?.textContent||''); });
   });
-  document.addEventListener('click',e=>{ if(!e.target.closest('.tile')) tiles.forEach(x=>x.classList.remove('open')) });
-  addEventListener('keydown',e=>{ if(e.key==='Escape') tiles.forEach(x=>x.classList.remove('open')) });
 })();
 
 /* three hats */

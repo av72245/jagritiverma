@@ -18,11 +18,11 @@ const items = reels.length
 <section class="sec" id="reels">
   <Divider />
   <h2 class="h2 rv">The ones people kept watching.</h2>
-  <p class="lead rv">Hover to play, or tap on a phone. The arrow in the corner opens the reel on Instagram.</p>
+  <p class="lead rv">Hover for a preview, click to watch with sound. The arrow in the corner opens the reel on Instagram.</p>
   <div class="reels" id="reelWall">
     {items.map((r, i) => (
       <article class:list={['reel', { empty: !r.src }]} style={grad(i)}>
-        {r.src && <video muted loop playsinline preload="metadata" poster={r.poster || undefined} src={`${r.src}#t=0.1`} aria-label={r.title}></video>}
+        {r.src && <video muted loop playsinline preload="metadata" poster={r.poster || undefined} src={`${r.src}#t=1.5`} aria-label={r.title}></video>}
         <span class="ph">Reel coming soon</span><span class="shade"></span><span class="play"></span>
         <button class="hit" type="button" aria-label={`Play ${r.title}`} data-cursor="Play"></button>
         <div class="meta"><b>{r.title}</b>{r.stat && <span>{r.stat}</span>}</div>

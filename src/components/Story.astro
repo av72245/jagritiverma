@@ -18,7 +18,7 @@ const hatList = [
       {hatList.map((h) => (
         <div class="hat" style={`--c:var(${h.c});--on:var(${h.on})`}>
           <div><p class="g-tag">{h.tag}</p><h3>{h.name}</h3><p>{h.text}</p></div>
-          <div class="hat-img"><span>Photo coming soon</span>{hats[h.key] && <Image src={hats[h.key]} alt={`Jagriti as ${h.name.toLowerCase()}`} widths={[480, 900]} sizes="(max-width:700px) 0px, 40vw" loading="lazy" />}</div>
+          <div class="hat-img"><span>Photo coming soon</span>{hats[h.key] && <><Image class="hat-bg" src={hats[h.key]} alt="" widths={[200]} sizes="200px" loading="lazy" aria-hidden="true" /><Image class="hat-full" src={hats[h.key]} alt={`Jagriti as ${h.name.toLowerCase()}`} widths={[480, 900]} sizes="(max-width:700px) 0px, 40vw" loading="lazy" /></>}</div>
         </div>
       ))}
     </div>

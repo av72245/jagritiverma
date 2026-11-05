@@ -43,7 +43,7 @@ Drop files into these folders, commit, and the site rebuilds on its own. On gith
 **Tips:**
 
 - Use original files from her phone or editing app, not Instagram downloads.
-- Reels with trending audio can be taken down for copyright. The site plays them muted.
+- Reels with trending audio can be taken down for copyright. Previews on the page are muted; clicking a reel opens it with sound.
 - The desktop mosaic has a hand-placed layout for exactly 13 photos. Any other number uses a flowing grid.
 - Check that anyone else in a photo is happy to appear.
 
